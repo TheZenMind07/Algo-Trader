@@ -11,6 +11,14 @@
         </div>
         <div class="navbar-content scroll-div">
             <ul class="nav pcoded-inner-navbar">
+                <form method="post" id="formOne">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="formConnect">
+                    <div class="text-center"><button type="submit" name="status" class="btn btn-secondary"
+                            value="connect">Start
+                            Session</button></div>
+
+                </form>
                 <li class="nav-item pcoded-menu-caption">
                     <label>Navigation</label>
                 </li>
