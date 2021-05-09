@@ -39,7 +39,7 @@
                             <div class="card-body">
                                 <h5>Session controls</h5>
                                 <hr>
-                                <form>
+                                <form method="post"> {% csrf_token %}
                                     <div class="row">
                                         <div class="col-md-6">
                                             <!-- <form> -->
@@ -51,14 +51,15 @@
                                                     your email with anyone else.</small>
                                             </div> -->
                                             <div class="form-group">
-                                                <label for="exampleFormControlSelect1">Example select</label>
-                                                <select class="form-control" id="exampleFormControlSelect1">
+                                                {{form}}
+                                                <!-- <label for="exampleFormControlSelect1">Example select</label>
+                                                <select class="" id="exampleFormControlSelect1">
                                                     <option>1</option>
                                                     <option>2</option>
                                                     <option>3</option>
                                                     <option>4</option>
                                                     <option>5</option>
-                                                </select>
+                                                </select> -->
                                             </div>
                                             <!-- <div class="form-group">
                                                 <label for="exampleInputPassword1">Password</label>
@@ -95,9 +96,10 @@
                                             </div> -->
                                             <div class="form-group">
                                                 <label for="startsession">Trading Session</label>
-                                                <button type="submit" class="btn btn-primary btn-block"
-                                                    id="startsession">Start Trading Session</button>
-                                                <button type="submit" class="btn btn-outline-danger btn-block">End
+                                                <button type="submit" name="status" class="btn btn-primary btn-block"
+                                                    id="startsession" value="start">Start Trading Session</button>
+                                                <button type="submit" name="status"
+                                                    class="btn btn-outline-danger btn-block" value="end">End
                                                     Trading Session</button>
 
                                             </div>
@@ -428,4 +430,13 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            var x = document.getElementById("id_trading_field");
+            x.classList.add("form-control");
+        }, 100);
+    });
+</script>
+{% endblock javascripts %}

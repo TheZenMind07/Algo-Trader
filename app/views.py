@@ -8,6 +8,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
 from django.http import HttpResponse
 from django import template
+from .forms import TradingForm
+
 
 @login_required(login_url="/login/")
 def index(request):
@@ -21,9 +23,11 @@ def index(request):
 @login_required(login_url="/login/")
 def pages(request):
     context = {}
-    print(request)
+    print(request.POST)
     # All resource paths end in .html.
     # Pick out the html file name from the url. And load that template.
+    if(request.path.split('/')[-1] == "ui-trade.html"):
+        context['form'] = TradingForm()
     try:
 
         load_template      = request.path.split('/')[-1]
