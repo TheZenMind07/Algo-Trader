@@ -24,7 +24,13 @@
                                 <div class="row d-flex align-items-center">
                                     <div class="col-9">
                                         <h3 class="f-w-300 d-flex align-items-center m-b-0"><i
-                                                class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>$ 249.95</h3>
+                                                class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>₹
+                                            {% if daypnl %}
+                                            {{ daypnl }}
+                                            {% else %}
+                                            0.00
+                                            {% endif %}
+                                        </h3>
                                     </div>
 
                                     <div class="col-3 text-right">
@@ -47,7 +53,13 @@
                                 <div class="row d-flex align-items-center">
                                     <div class="col-9">
                                         <h3 class="f-w-300 d-flex align-items-center  m-b-0"><i
-                                                class="feather icon-arrow-down text-c-red f-30 m-r-10"></i>$ 2.942.32
+                                                class="feather icon-arrow-down text-c-red f-30 m-r-10"></i>
+                                            ₹
+                                            {% if abspnl %}
+                                            {{ abspnl }}
+                                            {% else %}
+                                            0.00
+                                            {% endif %}
                                         </h3>
                                     </div>
                                     <div class="col-3 text-right">
@@ -70,7 +82,13 @@
                                 <div class="row d-flex align-items-center">
                                     <div class="col-9">
                                         <h3 class="f-w-300 d-flex align-items-center  m-b-0"><i
-                                                class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>$ 8.638.32
+                                                class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>₹
+
+                                            {% if holdings %}
+                                            {{ holdings }}
+                                            {% else %}
+                                            0.00
+                                            {% endif %}
                                         </h3>
                                     </div>
                                     <div class="col-3 text-right">
@@ -113,7 +131,12 @@
                                         <i class="feather icon-zap f-30 text-c-green"></i>
                                     </div>
                                     <div class="col">
-                                        <h3 class="f-w-300">23</h3>
+                                        <h3 class="f-w-300">
+                                            {% if holdingsCount %}
+                                            {{ holdingsCount }}
+                                            {% else %}
+                                            0
+                                            {% endif %}</h3>
                                         <span class="d-block text-uppercase">Total STOCKS</span>
                                     </div>
                                 </div>
@@ -124,7 +147,12 @@
                                         <i class="feather icon-map-pin f-30 text-c-blue"></i>
                                     </div>
                                     <div class="col">
-                                        <h3 class="f-w-300">26</h3>
+                                        <h3 class="f-w-300">
+                                            {% if positionsCount %}
+                                            {{ positionsCount }}
+                                            {% else %}
+                                            0
+                                            {% endif %}</h3>
                                         <span class="d-block text-uppercase">TOTAL POSITIONS</span>
                                     </div>
                                 </div>
@@ -136,11 +164,16 @@
                     <div class="col-md-12 col-xl-4">
                         <div class="card yearly-sales">
                             <div class="card-block">
-                                <h6 class="mb-4">Holdings</h6>
+                                <h6 class="mb-4">Positions</h6>
                                 <div class="row d-flex align-items-center">
                                     <div class="col-9">
                                         <h3 class="f-w-300 d-flex align-items-center  m-b-0"><i
-                                                class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>$ 8.638.32
+                                                class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>₹
+                                            {% if positions %}
+                                            {{ positions }}
+                                            {% else %}
+                                            0.00
+                                            {% endif %}
                                         </h3>
                                     </div>
                                     <div class="col-3 text-right">
@@ -154,6 +187,12 @@
                             </div>
                         </div>
                     </div>
+                    <form method="POST"> {% csrf_token %}
+                        {{form}}
+                        <button type="submit" name="status" class="btn btn-primary btn-block"
+                            value="Refresh">Refresh</button>
+                        <input type="hidden" name="form_type" value="formRefreshIndex">
+                    </form>
                     <!--[ year  sales section ] end-->
 
                     <!-- [social-media section] start

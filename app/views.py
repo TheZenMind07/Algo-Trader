@@ -2,21 +2,57 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
 from django.http import HttpResponse
 from django import template
-from .forms import TradingForm, StockForm
+from .forms import TradingForm, StockForm, DummyForm
 from .algos.connect import *
+from .algos.kc_other_apis import *
 
 
 @login_required(login_url="/login/")
 def index(request):
-
+    print(request.POST)
     context = {}
     context['segment'] = 'index'
+    context['form'] = DummyForm()
+    context = {
+        "daypnl" : False,
+        "abspnl" :False,
+        "holdings": False,
+        "holdingsCount": False,
+        "positionsCount" : False,
+        'positions' : False
+    }
+
+    if(request.method == 'POST'):
+        if(request.POST.get('form_type') == "formRefreshIndex"):
+            holdings = get_holdings()
+            positions = get_positions()
+            daypnl = float(0)
+            abspnl = float(0)
+            holding_value = float(0)
+            holding_count = len(holdings)
+            # position_count = positions.length
+            # position_value = float(0)
+            for holding in holdings:
+                daypnl += float(holding["day_change"])*float(holding["quantity"])
+                abspnl += float(holding["pnl"])
+                holding_value += float(holding["last_price"])*float(holding["quantity"])
+            # for position in positions:
+            #     positions
+            context['daypnl'] = round(daypnl,4)
+            context['abspnl'] = round(abspnl,4)
+            context['holdings'] = round(holding_value,4 )
+            context['holdingsCount'] = holding_count
+            print(context)
+
+
+
+
+
 
     html_template = loader.get_template( 'index.html' )   # template loader which searches for index.html in file
     return HttpResponse(html_template.render(context, request)) # render methoda loads the html
@@ -24,8 +60,11 @@ def index(request):
 @login_required(login_url="/login/")
 def pages(request):
     context = {}
+    print(request.POST)
     if(request.method == 'POST'):
-        request.POST['form-type']
+        if(request.POST.get('form_type')):
+            zerodhaSession()
+
     # All resource paths end in .html.
     # Pick out the html file name from the url. And load that template.
     if(request.path.split('/')[-1] == "ui-trade.html"):

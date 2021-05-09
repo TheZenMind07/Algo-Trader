@@ -26,4 +26,4 @@ class StockForm(forms.Form):
         }))
 
 class DummyForm(forms.Form):
-        val = forms.CharField()
+        val = forms.CharField(widget = forms.HiddenInput(), required = False)
