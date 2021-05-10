@@ -44,14 +44,14 @@ def index(request):
         holding_value += float(holding["last_price"])*float(holding["quantity"])
     for position in positions:
         position_value += float(position["value"])
-        print(position["value"])
+        # print(position["value"])
     context['daypnl'] = round(daypnl,4)
     context['abspnl'] = round(abspnl,4)
     context['holdings'] = round(holding_value,4 )
     context['holdingsCount'] = holding_count
     context['positionsCount'] = position_count
     context['positions'] = position_value
-    print(context)
+    # print(context)
 
 
 
@@ -73,18 +73,28 @@ def pages(request):
     if(request.method == 'POST'):
         if(request.POST.get('form_type') == "formRefreshIndex"):
             zerodhaSession()
+        elif(request.POST.get('form_type') == "formTrade"):
+            form = TradingForm(request.POST)
+            if form.is_valid():
+                print(form.cleaned_data)
+        elif(request.POST.get('form_type') == "formInvest"):
+            form = StockForm(request.POST)
+            if form.is_valid():
+                print(form.cleaned_data)
 
     # All resource paths end in .html.
     # Pick out the html file name from the url. And load that template.
     if(request.path.split('/')[-1] == "ui-trade.html"):
         context['form'] = TradingForm()
         context["positionlist"] = position_list['net']
-        print(context["positionlist"])
+        # print(context["positionlist"])
 
     elif(request.path.split('/')[-1] == "ui-stocks.html"):
         context['form'] = StockForm()
         context["holdinglist"] = holding_list
-        print(context["holdinglist"])
+        # print(context["holdinglist"])
+
+
 
     try:
 

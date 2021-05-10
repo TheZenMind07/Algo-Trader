@@ -10,6 +10,10 @@ strategy_choices =(
 # creating a form
 class TradingForm(forms.Form):
     trading_field = forms.ChoiceField(choices = strategy_choices)
+    trading_amount = forms.DecimalField(label = 'Trading Amount', widget = forms.TextInput(attrs={
+                "placeholder" : "0.00",
+                "class" : "form-control"
+        }))
 
 class StockForm(forms.Form):
         nse_code = forms.CharField(label ='NSE Code', widget = forms.TextInput(attrs={
