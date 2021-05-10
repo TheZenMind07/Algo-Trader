@@ -30,13 +30,13 @@ def autologin():
     driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div/div[2]/form/div[3]/button').click()
     time.sleep(5)
     request_token=driver.current_url.split('=')[1].split('&action')[0]
-    with open('request_token1.txt', 'w') as the_file:
+    with open('request_token.txt', 'w') as the_file:
         the_file.write(request_token)
     driver.quit()
 
 def zerodhaSession():
     autologin()
-    request_token = open("request_token1.txt",'r').read()
+    request_token = open("request_token.txt",'r').read()
     key_secret = open("api_key.txt",'r').read().split()
     kite = KiteConnect(api_key=key_secret[0])
     data = kite.generate_session(request_token, api_secret=key_secret[1])
