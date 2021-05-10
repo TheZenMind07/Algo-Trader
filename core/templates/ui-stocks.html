@@ -139,12 +139,28 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>#</th>
-                                                                <th>First Name</th>
-                                                                <th>Last Name</th>
-                                                                <th>Username</th>
+                                                                <th>Stock Name</th>
+                                                                <th>Last Price</th>
+                                                                <th>Quantity</th>
+                                                                <th>P&L</th>
+                                                                <th>Avg. Price</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            {% if holdinglist %}
+                                                            {% for holding in holdinglist %}
+                                                            <tr>
+                                                                <th scope="row">{{forloop.counter}}</th>
+                                                                <td>{{holding.tradingsymbol}}</td>
+                                                                <td>{{holding.last_price}}</td>
+                                                                <td>{{holding.quantity}}</td>
+                                                                <td>{{holding.pnl}}</td>
+                                                                <td>{{holding.average_price}}</td>
+                                                            </tr>
+
+                                                            {% endfor %}
+                                                            {% else %}
+
                                                             <tr>
                                                                 <th scope="row">1</th>
                                                                 <td>Mark</td>
@@ -163,6 +179,7 @@
                                                                 <td>the Bird</td>
                                                                 <td>@twitter</td>
                                                             </tr>
+                                                            {% endif %}
                                                         </tbody>
                                                     </table>
                                                 </div>

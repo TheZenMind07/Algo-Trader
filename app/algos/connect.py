@@ -41,10 +41,10 @@ def zerodhaSession():
     kite = KiteConnect(api_key=key_secret[0])
     data = kite.generate_session(request_token, api_secret=key_secret[1])
     print(data["access_token"])
-    with open('access_token1.txt', 'w') as file:
+    with open('access_token.txt', 'w') as file:
         file.write(data["access_token"])
 
 
-# zerodhaSession()
+zerodhaSession()
 
 #generating and storing access token - valid till 6 am the next day
