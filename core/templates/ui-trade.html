@@ -123,31 +123,44 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>#</th>
-                                                                <th>First Name</th>
-                                                                <th>Last Name</th>
-                                                                <th>Username</th>
+                                                                <th>Stock Name</th>
+                                                                <th>Last Price</th>
+                                                                <th>Buy Price</th>
+                                                                <th>Buy Quantity</th>
+                                                                <th>Sell Price</th>
+                                                                <th>Sell Quantity</th>
+                                                                <th>P&L</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            {% if positionlist %}
+                                                            {% for position in positionlist %}
                                                             <tr>
-                                                                <th scope="row">1</th>
-                                                                <td>Mark</td>
-                                                                <td>Otto</td>
-                                                                <td>@mdo</td>
+                                                                <th scope="row">{{forloop.counter}}</th>
+                                                                <td>{{position.tradingsymbol}}</td>
+                                                                <td>{{position.last_price}}</td>
+                                                                <td>{{position.buy_price}}</td>
+                                                                <td>{{position.buy_quantity}}</td>
+                                                                <td>{{position.sell_price}}</td>
+                                                                <td>{{position.sell_quantity}}</td>
+                                                                <td>{{position.pnl}}</td>
                                                             </tr>
+
+                                                            {% endfor %}
+                                                            {% else %}
+
                                                             <tr>
-                                                                <th scope="row">2</th>
-                                                                <td>Jacob</td>
-                                                                <td>Thornton</td>
-                                                                <td>@fat</td>
+                                                                <th scope="row">0</th>
+                                                                <td>NA</td>
+                                                                <td>NA</td>
+                                                                <td>NA</td>
+                                                                <td>NA</td>
+                                                                <td>NA</td>
+                                                                <td>NA</td>
+                                                                <td>NA</td>
                                                             </tr>
-                                                            <tr>
-                                                                <th scope="row">3</th>
-                                                                <td>Larry</td>
-                                                                <td>the Bird</td>
-                                                                <td>@twitter</td>
-                                                            </tr>
-                                                        </tbody>
+
+                                                            {% endif %}
                                                     </table>
                                                 </div>
                                             </div>

@@ -25,6 +25,8 @@ ltp = kite.ltp("NSE:INFY")
 
 # Fetch order details
 orders = kite.orders()
+positions = kite.positions()
+
 
 # Fetch position details
 def get_positions():

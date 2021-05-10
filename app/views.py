@@ -30,23 +30,27 @@ def index(request):
     # if(request.method == 'POST'):
     #     if(request.POST.get('form_type') == "formRefreshIndex"):
     holdings = get_holdings()
-    positions = get_positions()
+    position_list = get_positions()
+    positions = position_list['net']
     daypnl = float(0)
     abspnl = float(0)
     holding_value = float(0)
     holding_count = len(holdings)
-    # position_count = positions.length
-    # position_value = float(0)
+    position_count = len(positions)
+    position_value = float(0)
     for holding in holdings:
         daypnl += float(holding["day_change"])*float(holding["quantity"])
         abspnl += float(holding["pnl"])
         holding_value += float(holding["last_price"])*float(holding["quantity"])
-    # for position in positions:
-    #     positions
+    for position in positions:
+        position_value += float(position["value"])
+        print(position["value"])
     context['daypnl'] = round(daypnl,4)
     context['abspnl'] = round(abspnl,4)
     context['holdings'] = round(holding_value,4 )
     context['holdingsCount'] = holding_count
+    context['positionsCount'] = position_count
+    context['positions'] = position_value
     print(context)
 
 
@@ -74,11 +78,14 @@ def pages(request):
     # Pick out the html file name from the url. And load that template.
     if(request.path.split('/')[-1] == "ui-trade.html"):
         context['form'] = TradingForm()
+        context["positionlist"] = position_list['net']
+        print(context["positionlist"])
 
     elif(request.path.split('/')[-1] == "ui-stocks.html"):
         context['form'] = StockForm()
         context["holdinglist"] = holding_list
         print(context["holdinglist"])
+
     try:
 
         load_template      = request.path.split('/')[-1]
