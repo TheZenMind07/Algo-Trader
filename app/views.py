@@ -10,6 +10,8 @@ from django import template
 from .forms import TradingForm, StockForm, DummyForm
 from .algos.connect import *
 from .algos.kc_other_apis import *
+import json
+from .algos.dictfield_copy import *
 
 
 @login_required(login_url="/login/")
@@ -63,6 +65,7 @@ def index(request):
 
 @login_required(login_url="/login/")
 def pages(request):
+    print(request.path)
     holding_list = get_holdings()
     position_list = get_positions()
     context = {
@@ -94,7 +97,8 @@ def pages(request):
         context["holdinglist"] = holding_list
         # print(context["holdinglist"])
 
-
+    elif(request.path.split('/')[-1] == "charts-morris.html"):
+        context["chartmf"] = json.dumps(dictlist_mf(get_mfholdings()))
 
     try:
 

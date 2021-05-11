@@ -29,6 +29,9 @@ positions = kite.positions()
 mfholdings = kite.mf_holdings()
 
 def get_mfholdings():
+        return kite.mf_holdings()
+
+
 
 # Fetch position details
 def get_positions():
