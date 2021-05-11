@@ -12,6 +12,7 @@ from .algos.connect import *
 from .algos.kc_other_apis import *
 import json
 from .algos.dictfield_copy import *
+from django.http import JsonResponse
 
 
 @login_required(login_url="/login/")
@@ -98,7 +99,9 @@ def pages(request):
         # print(context["holdinglist"])
 
     elif(request.path.split('/')[-1] == "charts-morris.html"):
-        context["chartmf"] = json.dumps(dictlist_mf(get_mfholdings()))
+        chartmfholdings = dictlist_mf(get_mfholdings())
+        if request.is_ajax():
+            return JsonResponse({'chartmf': chartmfholdings}, status = 200)
 
     try:
 

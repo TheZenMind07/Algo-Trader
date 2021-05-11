@@ -20,7 +20,7 @@
         <div class="page-header">
             <div class="page-block">
                 <div class="row align-items-center">
-                    <div class="col-md-12">
+                    <div class="col-md-10">
                         <div class="page-header-title">
                             <h5 class="m-b-10">Morris Chart</h5>
                         </div>
@@ -29,6 +29,14 @@
                             <li class="breadcrumb-item"><a href="javascript:">Chart</a></li>
                             <li class="breadcrumb-item"><a href="javascript:">Morris Chart</a></li>
                         </ul>
+                    </div>
+                    <div class="col-md-2">
+                        <!-- <form action="post"> -->
+                        <!-- {% csrf_token %} -->
+
+                        <button type="submit" name="status" onclick="updateChart()" id="btn-charts"
+                            class="btn btn-primary" value="Refresh">Refresh</button>
+                        <!-- </form> -->
                     </div>
                 </div>
             </div>
@@ -39,16 +47,7 @@
                 <!-- [ Main Content ] start -->
                 <div class="row">
                     <!-- [ Morris Chart ] start -->
-                    <div class="col-xl-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Positions</h5>
-                            </div>
-                            <div class="card-block">
-                                <div id="morris-donut-chart-positions" style="height:300px"></div>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="col-xl-6">
                         <div class="card ">
                             <div class="card-header">
@@ -66,6 +65,16 @@
                             </div>
                             <div class="card-block">
                                 <div id="morris-donut-chart-mutualfund" style="height:300px"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Positions</h5>
+                            </div>
+                            <div class="card-block">
+                                <div id="morris-donut-chart-positions" style="height:300px"></div>
                             </div>
                         </div>
                     </div>
@@ -138,58 +147,88 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> -->
 <script src="/static/assets/js/pages/chart-morris-custom.js"></script>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 <script type="text/javascript">
     "use-strict";
     $(document).ready(function () {
         setTimeout(function () {
-            // $.ajax({
-            //     url:"/charts-morris.html",
+            var chart_color = ["#ED5565",
+                "#FC6E51",
+                "#FFCE54",
+                "#A0D468",
+                "#5D9CEC",
+                "#AC92EC",
+                "#EC87C0",
+                "#F5F7FA",
+                "#656D78",
+                "#DA4453",
+                "#E9573F",
+                "#F6BB42",
+                "#8CC152",
+                "#37BC9B",
+                "#3BAFDA",
+                "#4A89DC",
+                "#967ADC",
+                "#D770AD",
+                "#E6E9ED",
+                "#AAB2BD",
+                "#434A54"]
+            // function updateChart() {
+            // setTimeout(function () {
+            $.ajax({
+                url: '/charts-morris.html',
+                type: 'get',
+                success: function (data) {
+                    console.log(data.chartmf);
+                    Morris.Donut({
+                        element: "morris-donut-chart-mutualfund",
+                        data: data.chartmf
+                        // [
+                        //     { label: "Download Sales", value: 12 },
+                        //     { label: "In-Store Sales", value: 30 },
+                        //     { label: "Mail-Order Sales", value: 20 }
+                        // ]
+                        ,
+                        colors: chart_color
+                    });
+                }
 
-            // })
+            });
             // var chart_mf = chartmf;
-            Morris.Donut({
-                element: "morris-donut-chart-positions",
-                data: [
-                    { label: "Download Sales", value: 12 },
-                    { label: "In-Store Sales", value: 30 },
-                    { label: "Mail-Order Sales", value: 20 }
-                ],
-                colors: ["#1de9b6", "#A389D4", "#04a9f5", "#1dc4e9"]
-            });
+            // Morris.Donut({
+            //     element: "morris-donut-chart-positions",
+            //     data: [
+            //         { label: "Download Sales", value: 12 },
+            //         { label: "In-Store Sales", value: 30 },
+            //         { label: "Mail-Order Sales", value: 20 }
+            //     ],
+            //     colors: ["#1de9b6", "#A389D4", "#04a9f5", "#1dc4e9"]
+            // });
 
 
-            Morris.Donut({
-                element: "morris-donut-chart-holdings",
-                data: [
-                    { label: "Download Sales", value: 12 },
-                    { label: "In-Store Sales", value: 30 },
-                    { label: "Mail-Order Sales", value: 20 }
-                ],
-                colors: ["#1de9b6", "#A389D4", "#04a9f5", "#1dc4e9"]
-            });
+            // Morris.Donut({
+            //     element: "morris-donut-chart-holdings",
+            //     data: [
+            //         { label: "Download Sales", value: 12 },
+            //         { label: "In-Store Sales", value: 30 },
+            //         { label: "Mail-Order Sales", value: 20 }
+            //     ],
+            //     colors: ["#1de9b6", "#A389D4", "#04a9f5", "#1dc4e9"]
+            // });
 
-            Morris.Donut({
-                element: "morris-donut-chart-mutualfund",
-                data: [
-                    { label: "Download Sales", value: 12 },
-                    { label: "In-Store Sales", value: 30 },
-                    { label: "Mail-Order Sales", value: 20 }
-                ],
-                colors: ["#1de9b6", "#A389D4", "#04a9f5", "#1dc4e9"]
-            });
 
-            Morris.Donut({
-                element: "morris-donut-chart-summary",
-                data: [
-                    { label: "Download Sales", value: 12 },
-                    { label: "In-Store Sales", value: 30 },
-                    { label: "Mail-Order Sales", value: 20 }
-                ],
-                colors: ["#1de9b6", "#A389D4", "#04a9f5", "#1dc4e9"]
-            });
+
+            // Morris.Donut({
+            //     element: "morris-donut-chart-summary",
+            //     data: [
+            //         { label: "Download Sales", value: 12 },
+            //         { label: "In-Store Sales", value: 30 },
+            //         { label: "Mail-Order Sales", value: 20 }
+            //     ],
+            //     colors: ["#1de9b6", "#A389D4", "#04a9f5", "#1dc4e9"]
+            // });
         }, 700);
     });
 
