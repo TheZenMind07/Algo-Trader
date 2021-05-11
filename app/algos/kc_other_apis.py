@@ -27,6 +27,7 @@ ltp = kite.ltp("NSE:INFY")
 orders = kite.orders()
 positions = kite.positions()
 mfholdings = kite.mf_holdings()
+holdings = kite.holdings()
 
 def get_mfholdings():
         return kite.mf_holdings()

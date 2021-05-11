@@ -100,8 +100,31 @@ def pages(request):
 
     elif(request.path.split('/')[-1] == "charts-morris.html"):
         chartmfholdings = dictlist_mf(get_mfholdings())
+        chartstockholdings = dictlist_stock(get_holdings())
+        position_list = get_positions()
+        chartpositions = dictlist_position(position_list['net'])
+        mf_total = 0
+        position_total = 0
+        stock_toatl = 0
+        # print()
+        print(chartpositions)
+        for holding in chartstockholdings:
+            stock_toatl += holding["value"]
+        for position in chartpositions:
+            position_total += position["value"]
+        for mf in chartmfholdings:
+            mf_total += mf["value"]
+
+        summary_dict = [
+                        { "label" : "Stock", "value" : stock_toatl },
+                        { "label" : "Position", "value" : position_total },
+                        { "label" : "Mutual Fund", "value" : mf_total }
+                        ]
         if request.is_ajax():
-            return JsonResponse({'chartmf': chartmfholdings}, status = 200)
+            return JsonResponse({'chartmf': chartmfholdings,
+                                 'chartposition' : chartpositions,
+                                 'chartholdings': chartstockholdings,
+                                 'summarychart' :summary_dict}, status = 200)
 
     try:
 
