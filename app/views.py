@@ -1,7 +1,5 @@
 # -*- encoding: utf-8 -*-
-"""
 
-"""
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
@@ -86,8 +84,9 @@ def pages(request):
                 strategy = form.cleaned_data['trading_field']
                 capital = form.cleaned_data['trading_amount']
                 if(strategy == "1" and request.POST.get('status') == "start"):
+                    # renko_macd_algo(capital)
                     print("renko")
-                    renko_macd_algo(capital)
+
                 elif(request.POST.get('status') == "end"):
                     print("endsession")
                     sqaure_off_positions()

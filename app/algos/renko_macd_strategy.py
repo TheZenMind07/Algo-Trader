@@ -441,7 +441,8 @@ tickers = ["BHEL",
 "HINDALCO",
 "HDFC"]
 #############################################################################
-capital = 3000 #position size
+capital  = 0#position size
+# count = 0
 macd_xover = {}
 renko_param = {}
 for ticker in tickers:
@@ -469,6 +470,11 @@ def on_connect(ws,response):
 def renko_macd_algo(trading_limit):
     global capital
     capital = trading_limit
+    # if(count == 0):
+    #     kws.on_ticks=on_ticks
+    #     kws.on_connect=on_connect
+    #     kws.connect()
+    #     count = count +1
     while True:
         now = dt.datetime.now()
         if (now.hour >= 9):
@@ -477,3 +483,6 @@ def renko_macd_algo(trading_limit):
             kws.connect()
         if (now.hour >= 14 and now.minute >= 30):
             sys.exit()
+
+
+renko_macd_algo(2000)
