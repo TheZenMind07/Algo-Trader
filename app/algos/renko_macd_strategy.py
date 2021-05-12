@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Zerodha Kite Connect - Implementing real time renko + MACD strategy
 
-@author: Mayank Rasu (http://rasuquant.com/wp/)
 """
 
 
@@ -12,7 +10,7 @@ import datetime as dt
 import os
 import sys
 
-cwd = os.chdir("D:\\Udemy\\Zerodha KiteConnect API\\1_account_authorization")
+cwd = os.chdir("/home/rajkp/code/Projects/Django-Dashboard/boilerplate-code-django-dashboard/app/algos")
 
 #generate trading session
 access_token = open("access_token.txt",'r').read()
@@ -33,7 +31,7 @@ def tokenLookup(instrument_df,symbol_list):
 
 def tickerLookup(token):
     global instrument_df
-    return instrument_df[instrument_df.instrument_token==token].tradingsymbol.values[0] 
+    return instrument_df[instrument_df.instrument_token==token].tradingsymbol.values[0]
 
 def instrumentLookup(instrument_df,symbol):
     """Looks up instrument token for a given script from instrument dump"""
@@ -41,7 +39,7 @@ def instrumentLookup(instrument_df,symbol):
         return instrument_df[instrument_df.tradingsymbol==symbol].instrument_token.values[0]
     except:
         return -1
-        
+
 def fetchOHLC(ticker,interval,duration):
     """extracts historical data and outputs in the form of dataframe"""
     instrument = instrumentLookup(instrument_df,ticker)
@@ -61,8 +59,8 @@ def atr(DF,n):
 
 def MACD(DF,a,b,c):
     """function to calculate MACD
-       typical values a(fast moving average) = 12; 
-                      b(slow moving average) =26; 
+       typical values a(fast moving average) = 12;
+                      b(slow moving average) =26;
                       c(signal line ma window) =9"""
     df = DF.copy()
     df["MA_Fast"]=df["close"].ewm(span=a,min_periods=a).mean()
@@ -78,10 +76,10 @@ def macd_xover_refresh(macd,ticker):
         macd_xover[ticker]="bullish"
     elif macd["MACD"][-1]<macd["Signal"][-1]:
         macd_xover[ticker]="bearish"
-        
+
 def renkoBrickSize(ticker):
-    return min(10,max(1,round(1.5*atr(fetchOHLC(ticker,"60minute",60),200),0)))
-        
+    return min(10,max(1,round(2*atr(fetchOHLC(ticker,"60minute",60),200),0)))
+
 def renkoOperation(ticks):
     for tick in ticks:
         try:
@@ -99,13 +97,13 @@ def renkoOperation(ticks):
                 renko_param[ticker]["upper_limit"] = renko_param[ticker]["lower_limit"] - (gap*renko_param[ticker]["brick_size"]) + renko_param[ticker]["brick_size"]
                 renko_param[ticker]["lower_limit"] = renko_param[ticker]["lower_limit"] - ((1+gap)*renko_param[ticker]["brick_size"])
                 renko_param[ticker]["brick"] = min(-1,renko_param[ticker]["brick"]-(1+gap))
-            print("{}: brick number = {},last price ={}, upper bound ={}, lower bound ={}"\
-                  .format(ticker,renko_param[ticker]["brick"],tick['last_price'],renko_param[ticker]["upper_limit"],renko_param[ticker]["lower_limit"]))
+            # print("{}: brick number = {},last price ={}, upper bound ={}, lower bound ={}"\
+                  # .format(ticker,renko_param[ticker]["brick"],tick['last_price'],renko_param[ticker]["upper_limit"],renko_param[ticker]["lower_limit"]))
         except Exception as e:
             print(e)
-            pass   
+            pass
 
-def placeSLOrder(symbol,buy_sell,quantity,sl_price):    
+def placeSLOrder(symbol,buy_sell,quantity,sl_price):
     # Place an intraday stop loss order on NSE
     if buy_sell == "buy":
         t_type=kite.TRANSACTION_TYPE_BUY
@@ -129,15 +127,16 @@ def placeSLOrder(symbol,buy_sell,quantity,sl_price):
                     trigger_price = round(sl_price,1),
                     product=kite.PRODUCT_MIS,
                     variety=kite.VARIETY_REGULAR)
+    print(f'Order Placed {capital} -> type {buy_sell} -> sl price {sl_price}')
 
-def ModifyOrder(order_id,price):    
+def ModifyOrder(order_id,price):
     # Modify order given order id
     kite.modify_order(order_id=order_id,
                     price=round(price,1),
                     trigger_price=price,
                     order_type=kite.ORDER_TYPE_SL,
-                    variety=kite.VARIETY_REGULAR) 
-    
+                    variety=kite.VARIETY_REGULAR)
+
 def main(capital):
     global renko_param
     a,b = 0,0
@@ -155,7 +154,7 @@ def main(capital):
         except:
             print("can't extract order data..retrying")
             b+=1
-    
+
     for ticker in tickers:
         print("starting passthrough for.....",ticker)
         try:
@@ -188,16 +187,259 @@ def main(capital):
         except Exception as e:
             print("API error for ticker :",ticker)
             print(e)
-    
-    
+
+
 #####################update ticker list######################################
-tickers = ["ZEEL","WIPRO","VEDL","ULTRACEMCO","UPL","TITAN","TECHM","TATASTEEL",
-           "TATAMOTORS","TCS","SUNPHARMA","SBIN","SHREECEM","RELIANCE","POWERGRID",
-           "ONGC","NESTLEIND","NTPC","MARUTI","M&M","LT","KOTAKBANK","JSWSTEEL","INFY",
-           "INDUSINDBK","IOC","ITC","ICICIBANK","HDFC","HINDUNILVR","HINDALCO",
-           "HEROMOTOCO","HDFCBANK","HCLTECH","GRASIM","GAIL","EICHERMOT","DRREDDY",
-           "COALINDIA","CIPLA","BRITANNIA","BHARTIARTL","BPCL","BAJAJFINSV",
-           "BAJFINANCE","BAJAJ-AUTO","AXISBANK","ASIANPAINT","ADANIPORTS"]
+tickers = ["BHEL",
+"CONCOR",
+"ASTRAL",
+"INDHOTEL",
+"DALBHARAT",
+"COFORGE",
+"ITI",
+"IPCALAB",
+"SUMICHEM",
+"DHANI",
+"DIXON",
+"SUNTV",
+"FEDERALBNK",
+"OFSS",
+"COROMANDEL",
+"RECLTD",
+"VOLTAS",
+"ISEC",
+"AUBANK",
+"BALKRISIND",
+"GSPL",
+"HAL",
+"POLYCAB",
+"TATACHEM",
+"SUPREMEIND",
+"LTTS",
+"BHARATFORG",
+"HATSUN",
+"TVSMOTOR",
+"GMRINFRA",
+"TRENT",
+"MOTILALOFS",
+"L&TFH",
+"ATUL",
+"AIAENG",
+"GLAXO",
+"JSWENERGY",
+"SKFINDIA",
+"IDBI",
+"PRESTIGE",
+"NHPC",
+"ATGL",
+"TIINDIA",
+"SJVN",
+"MINDAIND",
+"CANBK",
+"VINATIORGA",
+"BANKINDIA",
+"OIL",
+"BBTC",
+"PFC",
+"GODREJAGRO",
+"AAVAS",
+"EXIDEIND",
+"WHIRLPOOL",
+"MAXHEALTH",
+"GODREJPROP",
+"VBL",
+"3MINDIA",
+"METROPOLIS",
+"ASTRAZEN",
+"MGL",
+"SRF",
+"APOLLOTYRE",
+"MFSL",
+"BATAINDIA",
+"UNIONBANK",
+"VGUARD",
+"ZYDUSWELL",
+"PFIZER",
+"BAYERCROP",
+"IRCTC",
+"CASTROLIND",
+"SANOFI",
+"ABFRL",
+"FORTIS",
+"CESC",
+"PERSISTENT",
+"GODREJIND",
+"MPHASIS",
+"PHOENIXLTD",
+"CHOLAHLDNG",
+"DEEPAKNTR",
+"HONAUT",
+"TATACOMM",
+"JMFINANCIL",
+"LICHSGFIN",
+"CUMMINSIND",
+"GICRE",
+"THERMAX",
+"SOLARINDS",
+"SRTRANSFIN",
+"LAURUSLABS",
+"IDFCFIRSTB",
+"CUB",
+"NIACL",
+"NAVINFLUOR",
+"OBEROIRLTY",
+"TATAELXSI",
+"RELAXO",
+"MANAPPURAM",
+"CRISIL",
+"AMARAJABAT",
+"GUJGASLTD",
+"BANKBARODA",
+"AARTIIND",
+"M&MFIN",
+"ASHOKLEY",
+"PGHL",
+"PIIND",
+"GILLETTE",
+"ABCAPITAL",
+"APLLTD",
+"CROMPTON",
+"NAM-INDIA",
+"ABB",
+"TTKPRESTIG",
+"SUVENPHAR",
+"IDEA",
+"BEL",
+"SCHAEFFLER",
+"ZEEL",
+"RBLBANK",
+"RAMCOCEM",
+"GLENMARK",
+"RAJESHEXPO",
+"SUNDRMFAST",
+"EMAMILTD",
+"ENDURANCE",
+"SYNGENE",
+"AKZOINDIA",
+"LALPATHLAB",
+"HINDZINC",
+"TATAPOWER",
+"JKCEMENT",
+"ESCORTS",
+"SUNDARMFIN",
+"IIFLWAM",
+"IBULHSGFIN",
+"CREDITACC",
+"KANSAINER",
+"MINDTREE",
+"PAGEIND",
+"CHOLAFIN",
+"AJANTPHARM",
+"NATCOPHARM",
+"JINDALSTEL",
+"TORNTPOWER",
+"SAIL",
+"INDIAMART",
+"GAIL",
+"HINDPETRO",
+"JUBLFOOD",
+"ADANITRANS",
+"BOSCHLTD",
+"IGL",
+"SIEMENS",
+"PETRONET",
+"ICICIPRULI",
+"ACC",
+"MARICO",
+"AMBUJACEM",
+"BERGEPAINT",
+"PIDILITIND",
+"INDUSTOWER",
+"ABBOTINDIA",
+"BIOCON",
+"MCDOWELL-N",
+"PGHH",
+"DMART",
+"MRF",
+"DLF",
+"GODREJCP",
+"COLPAL",
+"HDFCAMC",
+"YESBANK",
+"VEDL",
+"BAJAJHLDNG",
+"DABUR",
+"INDIGO",
+"ALKEM",
+"CADILAHC",
+"MOTHERSUMI",
+"HAVELLS",
+"ADANIENT",
+"UBL",
+"SBICARD",
+"PEL",
+"BANDHANBNK",
+"MUTHOOTFIN",
+"TORNTPHARM",
+"ICICIGI",
+"LUPIN",
+"LTI",
+"APOLLOHOSP",
+"ADANIGREEN",
+"NAUKRI",
+"NMDC",
+"PNB",
+"AUROPHARMA",
+"COALINDIA",
+"IOC",
+"NTPC",
+"ULTRACEMCO",
+"BPCL",
+"TATASTEEL",
+"TATACONSUM",
+"SUNPHARMA",
+"TATAMOTORS",
+"GRASIM",
+"SHREECEM",
+"SBIN",
+"EICHERMOT",
+"RELIANCE",
+"BAJAJ-AUTO",
+"INDUSINDBK",
+"BRITANNIA",
+"SBILIFE",
+"UPL",
+"ONGC",
+"ADANIPORTS",
+"POWERGRID",
+"NESTLEIND",
+"BHARTIARTL",
+"TITAN",
+"HEROMOTOCO",
+"ASIANPAINT",
+"MARUTI",
+"ITC",
+"ICICIBANK",
+"HCLTECH",
+"M&M",
+"LT",
+"INFY",
+"BAJAJFINSV",
+"DRREDDY",
+"HDFCBANK",
+"CIPLA",
+"HDFCLIFE",
+"TCS",
+"AXISBANK",
+"HINDUNILVR",
+"JSWSTEEL",
+"TECHM",
+"BAJFINANCE",
+"WIPRO",
+"DIVISLAB",
+"KOTAKBANK",
+"HINDALCO",
+"HDFC"]
 #############################################################################
 capital = 3000 #position size
 macd_xover = {}
@@ -205,7 +447,7 @@ renko_param = {}
 for ticker in tickers:
     renko_param[ticker] = {"brick_size":renkoBrickSize(ticker),"upper_limit":None, "lower_limit":None,"brick":0}
     macd_xover[ticker] = None
-    
+
 #create KiteTicker object
 kws = KiteTicker(key_secret[0],kite.access_token)
 tokens = tokenLookup(instrument_df,tickers)
@@ -223,11 +465,15 @@ def on_connect(ws,response):
     ws.subscribe(tokens)
     ws.set_mode(ws.MODE_LTP,tokens)
 
-while True:
-    now = dt.datetime.now()
-    if (now.hour >= 9):
-        kws.on_ticks=on_ticks
-        kws.on_connect=on_connect
-        kws.connect()
-    if (now.hour >= 14 and now.minute >= 30):
-        sys.exit()
+
+def renko_macd_algo(trading_limit):
+    global capital
+    capital = trading_limit
+    while True:
+        now = dt.datetime.now()
+        if (now.hour >= 9):
+            kws.on_ticks=on_ticks
+            kws.on_connect=on_connect
+            kws.connect()
+        if (now.hour >= 14 and now.minute >= 30):
+            sys.exit()

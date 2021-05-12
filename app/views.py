@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-Copyright (c) 2019 - present AppSeed.us
+
 """
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
@@ -13,6 +13,8 @@ from .algos.kc_other_apis import *
 import json
 from .algos.dictfield_copy import *
 from django.http import JsonResponse
+from .algos.renko_macd_strategy import *
+from .algos.square_off import *
 
 
 @login_required(login_url="/login/")
@@ -73,7 +75,7 @@ def pages(request):
         "holdinglist": False,
         "positionlist" : False
     }
-    print(request.POST)
+    print(request.POST.get('status'))
     if(request.method == 'POST'):
         if(request.POST.get('form_type') == "formRefreshIndex"):
             zerodhaSession()
@@ -81,10 +83,29 @@ def pages(request):
             form = TradingForm(request.POST)
             if form.is_valid():
                 print(form.cleaned_data)
+                strategy = form.cleaned_data['trading_field']
+                capital = form.cleaned_data['trading_amount']
+                if(strategy == "1" and request.POST.get('status') == "start"):
+                    print("renko")
+                    renko_macd_algo(capital)
+                elif(request.POST.get('status') == "end"):
+                    print("endsession")
+                    sqaure_off_positions()
+
         elif(request.POST.get('form_type') == "formInvest"):
             form = StockForm(request.POST)
             if form.is_valid():
                 print(form.cleaned_data)
+                if(request.POST.get('action') == "buy"):
+                    if(request.POST.get('limit_price') == 0.0):
+                        placeMarketOrderLT(form.cleaned_data['nse_code'],"buy", form.cleaned_data['quantity'])
+                    else :
+                        placeLimitOrderLT(form.cleaned_data['nse_code'],"buy", form.cleaned_data['quantity'], form.cleaned_data['limit_price'])
+                elif(request.POST.get('action') == "sell"):
+                    if(request.POST.get('limit_price') == 0.0):
+                        placeMarketOrderLT(form.cleaned_data['nse_code'],"sell", form.cleaned_data['quantity'])
+                    else :
+                        placeLimitOrderLT(form.cleaned_data['nse_code'],"sell", form.cleaned_data['quantity'], form.cleaned_data['limit_price'])
 
     # All resource paths end in .html.
     # Pick out the html file name from the url. And load that template.

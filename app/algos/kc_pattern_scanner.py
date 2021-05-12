@@ -5,14 +5,16 @@ Zerodha Kite Connect - candlestick pattern scanner
 @author: Mayank Rasu (http://rasuquant.com/wp/)
 """
 
-from kiteconnect import KiteConnect
+from kiteconnect import KiteConnect, KiteTicker
 import pandas as pd
 import datetime as dt
 import os
 import time
 import numpy as np
+import sys
 
-cwd = os.chdir("D:\\Udemy\\Zerodha KiteConnect API\\1_account_authorization")
+
+cwd = os.chdir("/home/rajkp/code/Projects/Django-Dashboard/boilerplate-code-django-dashboard/app/algos")
 
 #generate trading session
 access_token = open("access_token.txt",'r').read()
@@ -30,6 +32,13 @@ def instrumentLookup(instrument_df,symbol):
         return instrument_df[instrument_df.tradingsymbol==symbol].instrument_token.values[0]
     except:
         return -1
+    
+def tokenLookup(instrument_df,symbol_list):
+    """Looks up instrument token for a given script from instrument dump"""
+    token_list = []
+    for symbol in symbol_list:
+        token_list.append(int(instrument_df[instrument_df.tradingsymbol==symbol].instrument_token.values[0]))
+    return token_list
 
 def fetchOHLC(ticker,interval,duration):
     """extracts historical data and outputs in the form of dataframe"""
@@ -203,62 +212,353 @@ def candle_pattern(ohlc_df,ohlc_day):
     return "Significance - {}, Pattern - {}".format(signi,pattern)
 
 ##############################################################################################
-tickers = ["ZEEL","WIPRO","VEDL","ULTRACEMCO","UPL","TITAN","TECHM","TATASTEEL",
-           "TATAMOTORS","TCS","SUNPHARMA","SBIN","SHREECEM","RELIANCE","POWERGRID",
-           "ONGC","NESTLEIND","NTPC","MARUTI","M&M","LT","KOTAKBANK","JSWSTEEL","INFY",
-           "INDUSINDBK","IOC","ITC","ICICIBANK","HDFC","HINDUNILVR","HINDALCO",
-           "HEROMOTOCO","HDFCBANK","HCLTECH","GRASIM","GAIL","EICHERMOT","DRREDDY",
-           "COALINDIA","CIPLA","BRITANNIA","INFRATEL","BHARTIARTL","BPCL","BAJAJFINSV",
-           "BAJFINANCE","BAJAJ-AUTO","AXISBANK","ASIANPAINT","ADANIPORTS","IDEA",
-           "MCDOWELL-N","UBL","NIACL","SIEMENS","SRTRANSFIN","SBILIFE","PNB",
-           "PGHH","PFC","PEL","PIDILITIND","PETRONET","PAGEIND","OFSS","NMDC","NHPC",
-           "MOTHERSUMI","MARICO","LUPIN","L&TFH","INDIGO","IBULHSGFIN","ICICIPRULI",
-           "ICICIGI","HINDZINC","HINDPETRO","HAVELLS","HDFCLIFE","HDFCAMC","GODREJCP",
-           "GICRE","DIVISLAB","DABUR","DLF","CONCOR","COLPAL","CADILAHC","BOSCHLTD",
-           "BIOCON","BERGEPAINT","BANKBARODA","BANDHANBNK","BAJAJHLDNG","DMART",
-           "AUROPHARMA","ASHOKLEY","AMBUJACEM","ADANITRANS","ACC",
-           "WHIRLPOOL","WABCOINDIA","VOLTAS","VINATIORGA","VBL","VARROC","VGUARD",
-           "UNIONBANK","UCOBANK","TRENT","TORNTPOWER","TORNTPHARM","THERMAX","RAMCOCEM",
-           "TATAPOWER","TATACONSUM","TVSMOTOR","TTKPRESTIG","SYNGENE","SYMPHONY",
-           "SUPREMEIND","SUNDRMFAST","SUNDARMFIN","SUNTV","STRTECH","SAIL","SOLARINDS",
-           "SHRIRAMCIT","SCHAEFFLER","SANOFI","SRF","SKFINDIA","SJVN","RELAXO",
-           "RAJESHEXPO","RECLTD","RBLBANK","QUESS","PRESTIGE","POLYCAB","PHOENIXLTD",
-           "PFIZER","PNBHOUSING","PIIND","OIL","OBEROIRLTY","NAM-INDIA","NATIONALUM",
-           "NLCINDIA","NBCC","NATCOPHARM","MUTHOOTFIN","MPHASIS","MOTILALOFS","MINDTREE",
-           "MFSL","MRPL","MANAPPURAM","MAHINDCIE","M&MFIN","MGL","MRF","LTI","LICHSGFIN",
-           "LTTS","KANSAINER","KRBL","JUBILANT","JUBLFOOD","JINDALSTEL","JSWENERGY",
-           "IPCALAB","NAUKRI","IGL","IOB","INDHOTEL","INDIANB","IBVENTURES","IDFCFIRSTB",
-           "IDBI","ISEC","HUDCO","HONAUT","HAL","HEXAWARE","HATSUN","HEG","GSPL",
-           "GUJGASLTD","GRAPHITE","GODREJPROP","GODREJIND","GODREJAGRO","GLENMARK",
-           "GLAXO","GILLETTE","GMRINFRA","FRETAIL","FCONSUMER","FORTIS","FEDERALBNK",
-           "EXIDEIND","ESCORTS","ERIS","ENGINERSIN","ENDURANCE","EMAMILTD","EDELWEISS",
-           "EIHOTEL","LALPATHLAB","DALBHARAT","CUMMINSIND","CROMPTON","COROMANDEL","CUB",
-           "CHOLAFIN","CHOLAHLDNG","CENTRALBK","CASTROLIND","CANBK","CRISIL","CESC",
-           "BBTC","BLUEDART","BHEL","BHARATFORG","BEL","BAYERCROP","BATAINDIA",
-           "BANKINDIA","BALKRISIND","ATUL","ASTRAL","APOLLOTYRE","APOLLOHOSP",
-           "AMARAJABAT","ALKEM","APLLTD","AJANTPHARM","ABFRL","ABCAPITAL","ADANIPOWER",
-           "ADANIGREEN","ADANIGAS","ABBOTINDIA","AAVAS","AARTIIND","AUBANK","AIAENG","3MINDIA"]
+tickers = ["BHEL",
+"CONCOR",
+"ASTRAL",
+"INDHOTEL",
+"DALBHARAT",
+"COFORGE",
+"ITI",
+"IPCALAB",
+"SUMICHEM",
+"DHANI",
+"DIXON",
+"SUNTV",
+"FEDERALBNK",
+"OFSS",
+"COROMANDEL",
+"RECLTD",
+"VOLTAS",
+"ISEC",
+"AUBANK",
+"BALKRISIND",
+"GSPL",
+"HAL",
+"POLYCAB",
+"TATACHEM",
+"SUPREMEIND",
+"LTTS",
+"BHARATFORG",
+"HATSUN",
+"TVSMOTOR",
+"GMRINFRA",
+"TRENT",
+"MOTILALOFS",
+"L&TFH",
+"ATUL",
+"AIAENG",
+"GLAXO",
+"JSWENERGY",
+"SKFINDIA",
+"IDBI",
+"PRESTIGE",
+"NHPC",
+"ATGL",
+"TIINDIA",
+"SJVN",
+"MINDAIND",
+"CANBK",
+"VINATIORGA",
+"BANKINDIA",
+"OIL",
+"BBTC",
+"PFC",
+"GODREJAGRO",
+"AAVAS",
+"EXIDEIND",
+"WHIRLPOOL",
+"MAXHEALTH",
+"GODREJPROP",
+"VBL",
+"3MINDIA",
+"METROPOLIS",
+"ASTRAZEN",
+"MGL",
+"SRF",
+"APOLLOTYRE",
+"MFSL",
+"BATAINDIA",
+"UNIONBANK",
+"VGUARD",
+"ZYDUSWELL",
+"PFIZER",
+"BAYERCROP",
+"IRCTC",
+"CASTROLIND",
+"SANOFI",
+"ABFRL",
+"FORTIS",
+"CESC",
+"PERSISTENT",
+"GODREJIND",
+"MPHASIS",
+"PHOENIXLTD",
+"CHOLAHLDNG",
+"DEEPAKNTR",
+"HONAUT",
+"TATACOMM",
+"JMFINANCIL",
+"LICHSGFIN",
+"CUMMINSIND",
+"GICRE",
+"THERMAX",
+"SOLARINDS",
+"SRTRANSFIN",
+"LAURUSLABS",
+"IDFCFIRSTB",
+"CUB",
+"NIACL",
+"NAVINFLUOR",
+"OBEROIRLTY",
+"TATAELXSI",
+"RELAXO",
+"MANAPPURAM",
+"CRISIL",
+"AMARAJABAT",
+"GUJGASLTD",
+"BANKBARODA",
+"AARTIIND",
+"M&MFIN",
+"ASHOKLEY",
+"PGHL",
+"PIIND",
+"GILLETTE",
+"ABCAPITAL",
+"APLLTD",
+"CROMPTON",
+"NAM-INDIA",
+"ABB",
+"TTKPRESTIG",
+"SUVENPHAR",
+"IDEA",
+"BEL",
+"SCHAEFFLER",
+"ZEEL",
+"RBLBANK",
+"RAMCOCEM",
+"GLENMARK",
+"RAJESHEXPO",
+"SUNDRMFAST",
+"EMAMILTD",
+"ENDURANCE",
+"SYNGENE",
+"AKZOINDIA",
+"LALPATHLAB",
+"HINDZINC",
+"TATAPOWER",
+"JKCEMENT",
+"ESCORTS",
+"SUNDARMFIN",
+"IIFLWAM",
+"IBULHSGFIN",
+"CREDITACC",
+"KANSAINER",
+"MINDTREE",
+"PAGEIND",
+"CHOLAFIN",
+"AJANTPHARM",
+"NATCOPHARM",
+"JINDALSTEL",
+"TORNTPOWER",
+"SAIL",
+"INDIAMART",
+"GAIL",
+"HINDPETRO",
+"JUBLFOOD",
+"ADANITRANS",
+"BOSCHLTD",
+"IGL",
+"SIEMENS",
+"PETRONET",
+"ICICIPRULI",
+"ACC",
+"MARICO",
+"AMBUJACEM",
+"BERGEPAINT",
+"PIDILITIND",
+"INDUSTOWER",
+"ABBOTINDIA",
+"BIOCON",
+"MCDOWELL-N",
+"PGHH",
+"DMART",
+"MRF",
+"DLF",
+"GODREJCP",
+"COLPAL",
+"HDFCAMC",
+"YESBANK",
+"VEDL",
+"BAJAJHLDNG",
+"DABUR",
+"INDIGO",
+"ALKEM",
+"CADILAHC",
+"MOTHERSUMI",
+"HAVELLS",
+"ADANIENT",
+"UBL",
+"SBICARD",
+"PEL",
+"BANDHANBNK",
+"MUTHOOTFIN",
+"TORNTPHARM",
+"ICICIGI",
+"LUPIN",
+"LTI",
+"APOLLOHOSP",
+"ADANIGREEN",
+"NAUKRI",
+"NMDC",
+"PNB",
+"AUROPHARMA",
+"COALINDIA",
+"IOC",
+"NTPC",
+"ULTRACEMCO",
+"BPCL",
+"TATASTEEL",
+"TATACONSUM",
+"SUNPHARMA",
+"TATAMOTORS",
+"GRASIM",
+"SHREECEM",
+"SBIN",
+"EICHERMOT",
+"RELIANCE",
+"BAJAJ-AUTO",
+"INDUSINDBK",
+"BRITANNIA",
+"SBILIFE",
+"UPL",
+"ONGC",
+"ADANIPORTS",
+"POWERGRID",
+"NESTLEIND",
+"BHARTIARTL",
+"TITAN",
+"HEROMOTOCO",
+"ASIANPAINT",
+"MARUTI",
+"ITC",
+"ICICIBANK",
+"HCLTECH",
+"M&M",
+"LT",
+"INFY",
+"BAJAJFINSV",
+"DRREDDY",
+"HDFCBANK",
+"CIPLA",
+"HDFCLIFE",
+"TCS",
+"AXISBANK",
+"HINDUNILVR",
+"JSWSTEEL",
+"TECHM",
+"BAJFINANCE",
+"WIPRO",
+"DIVISLAB",
+"KOTAKBANK",
+"HINDALCO",
+"HDFC"]
+#####################################################################################################
 
 
 def main():
+    a,b = 0,0
+    while a < 10:
+        try:
+            pos_df = pd.DataFrame(kite.positions()["day"])
+            break
+        except:
+            print("can't extract position data..retrying")
+            a+=1
+    while b < 10:
+        try:
+            ord_df = pd.DataFrame(kite.orders())
+            break
+        except:
+            print("can't extract order data..retrying")
+            b+=1
+    
     for ticker in tickers:
         try:
             ohlc = fetchOHLC(ticker, '5minute',5)
             ohlc_day = fetchOHLC(ticker, 'day',30) 
             ohlc_day = ohlc_day.iloc[:-1,:]       
             cp = candle_pattern(ohlc,ohlc_day) 
-            print(ticker, ": ",cp)   
+            # print(ticker, ": ",cp)   
+            # if len(pos_df.columns)==0:
+            #     # if macd_xover[ticker] == "bullish" and renko_param[ticker]["brick"] >=2:
+            #     #     placeSLOrder(ticker,"buy",quantity,renko_param[ticker]["lower_limit"])
+            #     # if macd_xover[ticker] == "bearish" and renko_param[ticker]["brick"] <=-2:
+            #     #     placeSLOrder(ticker,"sell",quantity,renko_param[ticker]["upper_limit"])
+            # if len(pos_df.columns)!=0 and ticker not in pos_df["tradingsymbol"].tolist():
+            #     # if macd_xover[ticker] == "bullish" and renko_param[ticker]["brick"] >=2:
+            #     #     placeSLOrder(ticker,"buy",quantity,renko_param[ticker]["lower_limit"])
+            #     # if macd_xover[ticker] == "bearish" and renko_param[ticker]["brick"] <=-2:
+            #     #     placeSLOrder(ticker,"sell",quantity,renko_param[ticker]["upper_limit"])
+            # if len(pos_df.columns)!=0 and ticker in pos_df["tradingsymbol"].tolist():
+            #     if pos_df[pos_df["tradingsymbol"]==ticker]["quantity"].values[0] == 0:
+            #         if macd_xover[ticker] == "bullish" and renko_param[ticker]["brick"] >=2:
+            #             placeSLOrder(ticker,"buy",quantity,renko_param[ticker]["lower_limit"])
+            #         if macd_xover[ticker] == "bearish" and renko_param[ticker]["brick"] <=-2:
+            #             placeSLOrder(ticker,"sell",quantity,renko_param[ticker]["upper_limit"])
+            #     if pos_df[pos_df["tradingsymbol"]==ticker]["quantity"].values[0] > 0:
+            #         order_id = ord_df.loc[(ord_df['tradingsymbol'] == ticker) & (ord_df['status'].isin(["TRIGGER PENDING","OPEN"]))]["order_id"].values[0]
+            #         ModifyOrder(order_id,renko_param[ticker]["lower_limit"])
+            #     if pos_df[pos_df["tradingsymbol"]==ticker]["quantity"].values[0] < 0:
+            #         order_id = ord_df.loc[(ord_df['tradingsymbol'] == ticker) & (ord_df['status'].isin(["TRIGGER PENDING","OPEN"]))]["order_id"].values[0]
+            #         ModifyOrder(order_id,renko_param[ticker]["upper_limit"])
         except:
             print("skipping for ",ticker)
         
 # Continuous execution        
-starttime=time.time()
-timeout = time.time() + 60*60*1  # 60 seconds times 60 meaning the script will run for 1 hr
-while time.time() <= timeout:
-    try:
-        print("passthrough at ",time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
-        main()
-        time.sleep(300 - ((time.time() - starttime) % 300.0)) # 300 second interval between each new execution
-    except KeyboardInterrupt:
-        print('\n\nKeyboard exception received. Exiting.')
-        exit()
+# starttime=time.time()
+# timeout = time.time() + 60*60*1  # 60 seconds times 60 meaning the script will run for 1 hr
+# while time.time() <= timeout:
+#     try:
+#         print("passthrough at ",time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+#         main()
+#         time.sleep(300 - ((time.time() - starttime) % 300.0)) # 300 second interval between each new execution
+#     except KeyboardInterrupt:
+#         print('\n\nKeyboard exception received. Exiting.')
+#         exit()
+        
+        
+        
+capital = 3000 #position size
+# macd_xover = {}
+# renko_param = {}
+# for ticker in tickers:
+    # renko_param[ticker] = {"brick_size":renkoBrickSize(ticker),"upper_limit":None, "lower_limit":None,"brick":0}
+    # macd_xover[ticker] = None
+    
+#create KiteTicker object
+kws = KiteTicker(key_secret[0],kite.access_token)
+tokens = tokenLookup(instrument_df,tickers)
+
+start_minute = dt.datetime.now().minute
+def on_ticks(ws,ticks):
+    global start_minute
+    # renkoOperation(ticks)
+    now_minute = dt.datetime.now().minute
+    if abs(now_minute - start_minute) >= 5:
+        start_minute = now_minute
+        main(capital)
+
+def on_connect(ws,response):
+    ws.subscribe(tokens)
+    ws.set_mode(ws.MODE_LTP,tokens)
+
+
+def pattern_scanner():
+    while True:
+        now = dt.datetime.now()
+        if (now.hour >= 9):
+            kws.on_ticks=on_ticks
+            kws.on_connect=on_connect
+            kws.connect()
+        if (now.hour >= 14 and now.minute >= 30):
+            sys.exit()
