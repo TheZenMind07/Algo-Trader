@@ -485,4 +485,4 @@ def renko_macd_algo(trading_limit):
             sys.exit()
 
 
-renko_macd_algo(2000)
+# renko_macd_algo(2000)

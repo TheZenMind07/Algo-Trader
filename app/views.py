@@ -53,7 +53,7 @@ def index(request):
     context['holdings'] = round(holding_value,4 )
     context['holdingsCount'] = holding_count
     context['positionsCount'] = position_count
-    context['positions'] = position_value
+    context['positions'] = round(position_value,4)
     # print(context)
 
 
