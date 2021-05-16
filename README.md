@@ -1,39 +1,3 @@
-# [Django Dashboard Boilerplate](https://appseed.us/boilerplate-code/django-dashboard)
-
-> Template [boilerplate code](https://appseed.us/boilerplate-code) used by [AppSeed](https://appseed.us) to generate simple admin dashboards coded in [Django](https://www.djangoproject.com/) - Features
-
-- UI Kit: **Datta Able Dashboard** (Lite Version) provided by **CodedThemes**
-- SQLite Database, Django Native ORM
-- Modular design, clean codebase
-- Session-Based Authentication, Forms validation
-- Deployment scripts: Docker, Gunicorn / Nginx
-- Support via **Github** (issues tracker) and [Discord](https://discord.gg/fZC6hup).
-
-<br />
-
-> Links
-
-- [Boierplate Django Dashboard](https://appseed.us/boilerplate-code/django-dashboard) - Product page
-- [Boierplate Django Dashboard - Demo](https://boilerplate-code-django-dashboard.appseed.us/) - LIVE Demo
-- [Boierplate Django Dashboard - Docs](https://docs.appseed.us/boilerplate-code/django-dashboard/) - Documentation
-
-<br />
-
-## Want more? Go PRO!
-
-PRO versions include **Premium UI Kits**, Lifetime updates and **24/7 LIVE Support** (via [Discord](https://discord.gg/fZC6hup))
-
-| [Django Datta PRO](https://appseed.us/admin-dashboards/django-dashboard-dattaable-pro) | [Django Material PRO](https://appseed.us/admin-dashboards/django-dashboard-material-pro) | [Django Volt PRO](https://appseed.us/admin-dashboards/django-dashboard-volt-pro) |
-| --- | --- | --- |
-| [![Django Datta PRO](https://raw.githubusercontent.com/app-generator/django-dashboard-dattaable-pro/master/media/django-dashboard-dattaable-pro-screen.png)](https://appseed.us/admin-dashboards/django-dashboard-dattaable-pro) | [![Django Material PRO](https://raw.githubusercontent.com/app-generator/django-dashboard-material-pro/master/media/django-dashboard-material-pro-screen.png)](https://appseed.us/admin-dashboards/django-dashboard-material-pro) | [![Django Volt PRO](https://raw.githubusercontent.com/app-generator/django-dashboard-volt-pro/master/media/django-dashboard-volt-pro-screen.png)](https://appseed.us/admin-dashboards/django-dashboard-volt-pro)
-
-<br />
-<br />
-
-![Boierplate Code Django Dashboard - Template project provided by AppSeed.](https://raw.githubusercontent.com/app-generator/boilerplate-code-django-dashboard/master/media/boilerplate-code-django-dashboard-screen.png)
-
-<br />
-
 ## How to use it
 
 ```bash
@@ -107,14 +71,14 @@ The project is coded using a simple and intuitive structure presented bellow:
    |
    |-- authentication/                     # Handles auth routes (login and register)
    |    |
-   |    |-- urls.py                        # Define authentication routes  
-   |    |-- views.py                       # Handles login and registration  
-   |    |-- forms.py                       # Define auth forms  
+   |    |-- urls.py                        # Define authentication routes
+   |    |-- views.py                       # Handles login and registration
+   |    |-- forms.py                       # Define auth forms
    |
    |-- app/                                # A simple app that serve HTML files
    |    |
    |    |-- views.py                       # Serve HTML pages for authenticated users
-   |    |-- urls.py                        # Define some super simple routes  
+   |    |-- urls.py                        # Define some super simple routes
    |
    |-- requirements.txt                    # Development modules - SQLite storage
    |
@@ -128,10 +92,10 @@ The project is coded using a simple and intuitive structure presented bellow:
 
 > The bootstrap flow
 
-- Django bootstrapper `manage.py` uses `core/settings.py` as the main configuration file
-- `core/settings.py` loads the app magic from `.env` file
-- Redirect the guest users to Login page
-- Unlock the pages served by *app* node for authenticated users
+-   Django bootstrapper `manage.py` uses `core/settings.py` as the main configuration file
+-   `core/settings.py` loads the app magic from `.env` file
+-   Redirect the guest users to Login page
+-   Unlock the pages served by _app_ node for authenticated users
 
 <br />
 
@@ -140,6 +104,7 @@ The project is coded using a simple and intuitive structure presented bellow:
 The app is provided with a basic configuration to be executed in [Docker](https://www.docker.com/), [Gunicorn](https://gunicorn.org/), and [Waitress](https://docs.pylonsproject.org/projects/waitress/en/stable/).
 
 ### [Docker](https://www.docker.com/) execution
+
 ---
 
 The application can be easily executed in a docker container. The steps:
@@ -159,19 +124,20 @@ $ sudo docker-compose pull && sudo docker-compose build && sudo docker-compose u
 
 Visit `http://localhost:5005` in your browser. The app should be up & running.
 
-> Create Django `superuser` 
+> Create Django `superuser`
 
 ```bash
 $ # Get Container ID
 $ docker ps
-$ 
+$
 $ # Call docker exec and CREATE the Superuser
 $ docker exec -it <APPSEED_CONTAINER_ID> python manage.py createsuperuser
 ```
- 
+
 <br />
 
 ### [Gunicorn](https://gunicorn.org/)
+
 ---
 
 Gunicorn 'Green Unicorn' is a Python WSGI HTTP Server for UNIX.
@@ -181,6 +147,7 @@ Gunicorn 'Green Unicorn' is a Python WSGI HTTP Server for UNIX.
 ```bash
 $ pip install gunicorn
 ```
+
 > Start the app using gunicorn binary
 
 ```bash
@@ -190,10 +157,10 @@ Serving on http://localhost:8001
 
 Visit `http://localhost:8001` in your browser. The app should be up & running.
 
-
 <br />
 
 ### [Waitress](https://docs.pylonsproject.org/projects/waitress/en/stable/)
+
 ---
 
 Waitress (Gunicorn equivalent for Windows) is meant to be a production-quality pure-Python WSGI server with very acceptable performance. It has no dependencies except ones that live in the Python standard library.
@@ -203,6 +170,7 @@ Waitress (Gunicorn equivalent for Windows) is meant to be a production-quality p
 ```bash
 $ pip install waitress
 ```
+
 > Start the app using [waitress-serve](https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html)
 
 ```bash
@@ -214,14 +182,4 @@ Visit `http://localhost:8001` in your browser. The app should be up & running.
 
 <br />
 
-## Credits & Links
-
-- [Django](https://www.djangoproject.com/) - The official website
-- [Boilerplate Code](https://appseed.us/boilerplate-code) - Index provided by **AppSeed**
-- [Boilerplate Code](https://github.com/app-generator/boilerplate-code) - Index published on Github
-
-<br />
-
----
-[Django Dashboard Boilerplate](https://appseed.us/boilerplate-code/django-dashboard) - Provided by **AppSeed** [App Generator](https://appseed.us/app-generator).
 # Django-DashBoard-Trading
